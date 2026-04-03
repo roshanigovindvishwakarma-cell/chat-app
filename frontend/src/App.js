@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import axios from "axios";
 
 // ✅ PORT 5001
-const socket = io("http://localhost:5001");
+https://chat-app-1jdk.onrender.com
 
 function App() {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ function App() {
   const [chat, setChat] = useState([]);
 
   const register = async () => {
-    await axios.post("http://localhost:5001/register", {
+    https://chat-app-1jdk.onrender.com {
       email,
       password,
     });
@@ -23,7 +23,7 @@ function App() {
   };
 
   const login = async () => {
-    const res = await axios.post("http://localhost:5001/login", {
+    const res = await axios.post https://chat-app-1jdk.onrender.com, {
       email,
       password,
     });
