@@ -14,7 +14,6 @@ function App() {
       alert("Register success");
     } catch (e) {
       alert("Register failed");
-      console.log(e);
     }
   };
 
@@ -27,7 +26,6 @@ function App() {
       alert("Login success");
     } catch (e) {
       alert("Login failed");
-      console.log(e);
     }
   };
 
