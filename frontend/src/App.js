@@ -1,50 +1,45 @@
-//change
 import React from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const backendURL = "https://chat-backend-uufb.onrender.com";
+const API = "https://chat-backend-uufb.onrender.com";
 
-// socket connection
-const socket = io(backendURL);
+const socket = io(API);
 
 function App() {
 
-  const registerUser = async () => {
+  const register = async () => {
     try {
-      await axios.post(`${backendURL}/register`, {
+      await axios.post(API + "/register", {
         username: "test",
         email: "test@test.com",
         password: "123456"
       });
-      alert("Registered successfully");
-    } catch (err) {
-      console.log(err);
-      alert("Register error");
+      alert("Register success");
+    } catch (e) {
+      alert("Register failed");
+      console.log(e);
     }
   };
 
-  const loginUser = async () => {
+  const login = async () => {
     try {
-      await axios.post(`${backendURL}/login`, {
+      await axios.post(API + "/login", {
         email: "test@test.com",
         password: "123456"
       });
-      alert("Login successful");
-    } catch (err) {
-      console.log(err);
-      alert("Login error");
+      alert("Login success");
+    } catch (e) {
+      alert("Login failed");
+      console.log(e);
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <h2>Chat App</h2>
-
-      <button onClick={registerUser}>Register</button>
-      <br /><br />
-
-      <button onClick={loginUser}>Login</button>
+      <button onClick={register}>Register</button>
+      <button onClick={login}>Login</button>
     </div>
   );
 }
