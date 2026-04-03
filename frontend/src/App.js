@@ -1,23 +1,15 @@
-<<<<<<< HEAD
-=======
-//update
->>>>>>> f38bf6d3eea8158fc46f9bddc0ea6baadf5eb91a
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { io } from "socket.io-client";
-
-const API = "https://chat-backend-uufb.onrender.com";
-
-const socket = io(API);
 
 function App() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const register = async () => {
     try {
-      await axios.post(API + "/register", {
-        username: "test",
-        email: "test@test.com",
-        password: "123456"
+      await axios.post("http://localhost:5000/api/auth/register", {
+        email,
+        password,
       });
       alert("Register success");
     } catch (e) {
@@ -28,9 +20,9 @@ function App() {
 
   const login = async () => {
     try {
-      await axios.post(API + "/login", {
-        email: "test@test.com",
-        password: "123456"
+      await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
       });
       alert("Login success");
     } catch (e) {
@@ -40,8 +32,23 @@ function App() {
   };
 
   return (
-    <div>
-      <h2>Chat App</h2>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h2>Login / Register</h2>
+
+      <input
+        type="email"
+        placeholder="Email"
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <br /><br />
+
+      <input
+        type="password"
+        placeholder="Password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <br /><br />
+
       <button onClick={register}>Register</button>
       <button onClick={login}>Login</button>
     </div>
