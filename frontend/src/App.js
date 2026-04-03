@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-// ✅ PORT 5001
-https://chat-app-1jdk.onrender.com
+const socket = io("https://chat-app-1jdk.onrender.com");
 
 function App() {
   const [email, setEmail] = useState("");
@@ -15,7 +14,7 @@ function App() {
   const [chat, setChat] = useState([]);
 
   const register = async () => {
-    https://chat-app-1jdk.onrender.com {
+    await axios.post("https://chat-app-1jdk.onrender.com/register", {
       email,
       password,
     });
@@ -23,7 +22,7 @@ function App() {
   };
 
   const login = async () => {
-    const res = await axios.post https://chat-app-1jdk.onrender.com, {
+    const res = await axios.post("https://chat-app-1jdk.onrender.com/login", {
       email,
       password,
     });
