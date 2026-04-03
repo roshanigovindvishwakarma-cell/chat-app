@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-const URL = "https://chat-app-1jdk.onrender.com";
-const socket = io(URL);
+// ✅ your backend URL
+const API = "https://chat-app-1jdk.onrender.com";
+
+// ✅ socket connection
+const socket = io(API);
 
 function App() {
   const [email, setEmail] = useState("");
@@ -14,13 +17,21 @@ function App() {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
 
+  // ✅ REGISTER
   const register = async () => {
-    await axios.post(`${URL}/register`, { email, password });
+    await axios.post(`${API}/register`, {
+      email,
+      password,
+    });
     alert("Registered");
   };
 
+  // ✅ LOGIN
   const login = async () => {
-    const res = await axios.post(`${URL}/login`, { email, password });
+    const res = await axios.post(`${API}/login`, {
+      email,
+      password,
+    });
 
     if (res.data.message === "Success") {
       setIsLoggedIn(true);
@@ -53,10 +64,14 @@ function App() {
       <div style={{ textAlign: "center", marginTop: "50px" }}>
         <h2>Login / Register</h2>
 
-        <input onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+        <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
         <br /><br />
 
-        <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <br /><br />
 
         <button onClick={register}>Register</button>
@@ -85,7 +100,10 @@ function App() {
           ))}
         </div>
 
-        <input value={message} onChange={(e) => setMessage(e.target.value)} />
+        <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
         <button onClick={sendMessage}>Send</button>
       </div>
     </div>
