@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-// ✅ backend URL
 const URL = "https://chat-app-1jdk.onrender.com";
-
-// ✅ socket connection
 const socket = io(URL);
 
 function App() {
@@ -17,21 +14,13 @@ function App() {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
 
-  // ✅ REGISTER
   const register = async () => {
-    await axios.post(`${URL}/register`, {
-      email,
-      password,
-    });
+    await axios.post(`${URL}/register`, { email, password });
     alert("Registered");
   };
 
-  // ✅ LOGIN
   const login = async () => {
-    const res = await axios.post(`${URL}/login`, {
-      email,
-      password,
-    });
+    const res = await axios.post(`${URL}/login`, { email, password });
 
     if (res.data.message === "Success") {
       setIsLoggedIn(true);
@@ -41,7 +30,6 @@ function App() {
     }
   };
 
-  // ✅ SOCKET EVENTS
   useEffect(() => {
     socket.on("receive_message", (data) => {
       setChat((prev) => [...prev, data]);
@@ -60,23 +48,15 @@ function App() {
     setMessage("");
   };
 
-  // LOGIN PAGE
   if (!isLoggedIn) {
     return (
       <div style={{ textAlign: "center", marginTop: "50px" }}>
         <h2>Login / Register</h2>
 
-        <input
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
         <br /><br />
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
         <br /><br />
 
         <button onClick={register}>Register</button>
@@ -85,7 +65,6 @@ function App() {
     );
   }
 
-  // CHAT PAGE
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <div style={{ width: "25%", borderRight: "1px solid black", padding: "10px" }}>
@@ -106,10 +85,7 @@ function App() {
           ))}
         </div>
 
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
+        <input value={message} onChange={(e) => setMessage(e.target.value)} />
         <button onClick={sendMessage}>Send</button>
       </div>
     </div>
