@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-const socket = io("http://localhost:5000");
+// ✅ PORT 5001
+const socket = io("http://localhost:5001");
 
 function App() {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ function App() {
   const [chat, setChat] = useState([]);
 
   const register = async () => {
-    await axios.post("http://localhost:5000/register", {
+    await axios.post("http://localhost:5001/register", {
       email,
       password,
     });
@@ -22,7 +23,7 @@ function App() {
   };
 
   const login = async () => {
-    const res = await axios.post("http://localhost:5000/login", {
+    const res = await axios.post("http://localhost:5001/login", {
       email,
       password,
     });
@@ -61,7 +62,11 @@ function App() {
         <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
         <br /><br />
 
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <br /><br />
 
         <button onClick={register}>Register</button>
@@ -90,7 +95,10 @@ function App() {
           ))}
         </div>
 
-        <input value={message} onChange={(e) => setMessage(e.target.value)} />
+        <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
         <button onClick={sendMessage}>Send</button>
       </div>
     </div>

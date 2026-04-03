@@ -26,7 +26,6 @@ app.post("/login", (req, res) => {
   else res.json({ message: "Fail" });
 });
 
-// SOCKET
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -53,4 +52,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(5000, () => console.log("Server running on port 5000"));
+// ✅ PORT 5001
+server.listen(5001, () => {
+  console.log("Server running on port 5001");
+});
