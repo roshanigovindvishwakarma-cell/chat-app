@@ -1,62 +1,37 @@
 const express = require("express");
-const http = require("http");
 const cors = require("cors");
-const { Server } = require("socket.io");
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-let users = [];
-let onlineUsers = [];
-
-// ✅ REGISTER
-app.post("/register", (req, res) => {
-  users.push(req.body);
-  res.json({ message: "Registered" });
+// test route
+app.get("/", (req, res) => {
+  res.send("Backend running 🚀");
 });
 
-// ✅ LOGIN
-app.post("/login", (req, res) => {
-  const user = users.find(
-    (u) =>
-      u.email === req.body.email &&
-      u.password === req.body.password
-  );
+// chat
+let messages = [];
 
-  if (user) res.json({ message: "Success" });
-  else res.json({ message: "Fail" });
+app.post("/send", (req, res) => {
+  const { user, text } = req.body;
+
+  if (!user || !text) {
+    return res.status(400).json({ error: "Missing data" });
+  }
+
+  messages.push({ user, text });
+  res.json({ success: true });
 });
 
-const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: { origin: "*" },
+app.get("/messages", (req, res) => {
+  res.json(messages);
 });
 
-// ✅ SOCKET
-io.on("connection", (socket) => {
-  let currentUser = "";
+// IMPORTANT
+const PORT = process.env.PORT || 10000;
 
-  socket.on("join", (email) => {
-    currentUser = email;
-    onlineUsers.push(email);
-    onlineUsers = [...new Set(onlineUsers)];
-    io.emit("online_users", onlineUsers);
-  });
-
-  socket.on("send_message", (data) => {
-    io.emit("receive_message", data);
-  });
-
-  socket.on("disconnect", () => {
-    onlineUsers = onlineUsers.filter((u) => u !== currentUser);
-    io.emit("online_users", onlineUsers);
-  });
-});
-
-const PORT = process.env.PORT || 5000;
-
-server.listen(PORT, () => {
-  console.log("Server running 🚀");
+app.listen(PORT, () => {
+  console.log("Server started on port " + PORT);
 });
