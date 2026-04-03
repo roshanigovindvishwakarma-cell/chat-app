@@ -3,15 +3,17 @@ const cors = require("cors");
 
 const app = express();
 
-// ✅ Allow frontend (Vercel) to connect
-app.use(cors({
-  origin: "*"
-}));
-
+// ✅ Allow all origins (Vercel frontend can connect)
+app.use(cors());
 app.use(express.json());
 
-// ✅ Temporary storage (for demo)
+// ✅ Temporary storage
 let messages = [];
+
+// ✅ Root route (IMPORTANT for testing)
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
 
 // ✅ Send message
 app.post("/api/messages", (req, res) => {
@@ -36,11 +38,7 @@ app.get("/api/messages", (req, res) => {
   res.json(messages);
 });
 
-// ✅ Test route (VERY IMPORTANT)
-app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
-});
-
+// ✅ Port (Render will use this)
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
