@@ -1,33 +1,46 @@
 const express = require("express");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
-
 app.use(cors());
-app.use(express.json()); // VERY IMPORTANT
+app.use(express.json());
 
-// test route
-app.get("/", (req, res) => {
-  res.send("Backend is running ✅");
+const server = http.createServer(app);
+
+// ✅ SOCKET SETUP
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
 });
 
-// send message
-app.post("/send", (req, res) => {
-  const { user, message } = req.body;
+let users = [];
 
-  if (!user || !message) {
-    return res.status(400).json({ error: "Missing data" });
-  }
+// ✅ SOCKET CONNECTION
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
 
-  res.json({
-    success: true,
-    user,
-    message
+  socket.on("join", (username) => {
+    users.push({ id: socket.id, username });
+    io.emit("online-users", users);
+  });
+
+  socket.on("send-message", (data) => {
+    io.emit("receive-message", data);
+  });
+
+  socket.on("disconnect", () => {
+    users = users.filter((u) => u.id !== socket.id);
+    io.emit("online-users", users);
   });
 });
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+// test route
+app.get("/", (req, res) => {
+  res.send("Backend running");
 });
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log("Server running on port", PORT));
