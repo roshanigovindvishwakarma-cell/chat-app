@@ -1,119 +1,51 @@
-import { useState, useEffect } from "react";
-import io from "socket.io-client";
-import axios from "axios";
-
-// ✅ YOUR BACKEND URL
-const API = "https://chat-app-1jdk.onrender.com";
-
-const socket = io(API);
+import { useState } from "react";
 
 function App() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [user, setUser] = useState("");
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
 
-  // ✅ REGISTER
-  const register = async () => {
-    await axios.post(`${API}/register`, { email, password });
-    alert("Registered");
-  };
-
-  // ✅ LOGIN
-  const login = async () => {
-    const res = await axios.post(`${API}/login`, {
-      email,
-      password,
+  const sendMessage = async () => {
+    const res = await fetch("https://chat-backend-v1-8yxc.onrender.com/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user, message }),
     });
 
-    if (res.data.message === "Success") {
-      setIsLoggedIn(true);
-      socket.emit("join", email);
-    } else {
-      alert("Login failed");
-    }
-  };
+    const data = await res.json();
 
-  // ✅ SOCKET LISTEN
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setChat((prev) => [...prev, data]);
-    });
-
-    socket.on("online_users", (users) => {
-      setOnlineUsers(users);
-    });
-  }, []);
-
-  // ✅ SEND MESSAGE
-  const sendMessage = () => {
-    if (!message) return;
-
-    socket.emit("send_message", {
-      user: email,
-      text: message,
-    });
-
+    setChat([...chat, data]);
     setMessage("");
   };
 
-  // 🔐 LOGIN PAGE
-  if (!isLoggedIn) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2>Login / Register</h2>
-
-        <input
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br /><br />
-
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
-
-        <button onClick={register}>Register</button>
-        <button onClick={login}>Login</button>
-      </div>
-    );
-  }
-
-  // 💬 CHAT PAGE
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      {/* ONLINE USERS */}
-      <div style={{ width: "25%", borderRight: "1px solid black", padding: "10px" }}>
-        <h3>Online Users</h3>
-        {onlineUsers.map((u, i) => (
-          <p key={i}>🟢 {u}</p>
+    <div style={{ padding: "20px" }}>
+      <h2>Chat App</h2>
+
+      <input
+        placeholder="Your name"
+        value={user}
+        onChange={(e) => setUser(e.target.value)}
+      />
+
+      <br /><br />
+
+      <input
+        placeholder="Message"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+
+      <button onClick={sendMessage}>Send</button>
+
+      <div>
+        {chat.map((c, i) => (
+          <p key={i}>
+            <b>{c.user}:</b> {c.message}
+          </p>
         ))}
-      </div>
-
-      {/* CHAT */}
-      <div style={{ width: "75%", padding: "20px" }}>
-        <h2>Public Chat</h2>
-
-        <div style={{ height: "300px", border: "1px solid black", overflow: "auto" }}>
-          {chat.map((c, i) => (
-            <p key={i}>
-              <b>{c.user}:</b> {c.text}
-            </p>
-          ))}
-        </div>
-
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type message..."
-        />
-        <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );
